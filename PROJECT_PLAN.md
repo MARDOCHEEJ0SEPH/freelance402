@@ -1751,6 +1751,871 @@ DELETE /api/notifications/:id       # Delete notification
 
 ---
 
+## 💎 Freelancer Subscription System (Premium Features)
+
+### Overview
+
+Inspired by Fiverr's successful Seller Plus model, Freelance402 offers tiered subscription plans that give freelancers competitive advantages through enhanced visibility, priority matching, advanced analytics, and reduced fees.
+
+---
+
+### 🎖️ Subscription Tiers
+
+#### **FREE Tier (Basic)**
+**Cost**: $0/month
+
+**Features**:
+- Standard profile listing
+- Submit unlimited proposals (with bid limits*)
+- Basic analytics dashboard
+- Standard support (email, 48h response)
+- 20% platform commission
+- Access to all public jobs
+- Standard search ranking
+- Basic portfolio (3 projects)
+- 5 skills listed
+
+**Limitations**:
+- 30 bids per month
+- No priority matching
+- No featured badge
+- Limited profile customization
+- Standard response time in search results
+
+---
+
+#### **STARTER Tier**
+**Cost**: $19/month (billed monthly) or $190/year (save $38)
+
+**Target Audience**: Entry to intermediate freelancers looking to grow
+
+**All FREE features plus**:
+- **50% more bids**: 45 proposals/month
+- **Priority Boost**: 2x higher in search rankings
+- **Enhanced Profile**:
+  - "Starter" badge
+  - Unlimited portfolio projects
+  - 10 skills listed
+  - Profile customization (colors, themes)
+  - Video introduction (30 seconds)
+- **Analytics Pro**:
+  - Profile view statistics
+  - Proposal performance metrics
+  - Competitor insights
+- **Reduced Commission**: 15% platform fee (save 5%)
+- **Priority Support**: 24h email response
+- **Job Alerts**: Early access to new job postings (30 min early)
+- **Smart Matching Priority**: 1.5x boost in AI matching algorithm
+
+**ROI Example**: Break even at $380 in monthly earnings (just 2-3 projects)
+
+---
+
+#### **PRO Tier** ⭐ Most Popular
+**Cost**: $49/month (billed monthly) or $490/year (save $98)
+
+**Target Audience**: Experienced freelancers, serious professionals
+
+**All STARTER features plus**:
+- **Unlimited Bids**: No proposal limits
+- **Maximum Priority**: 5x boost in search rankings
+- **Premium Profile**:
+  - "PRO" verified badge
+  - Featured in "Top Freelancers" section
+  - Priority placement in job matches
+  - Custom profile URL
+  - Video introduction (2 minutes)
+  - Client testimonials showcase
+- **Advanced Analytics Suite**:
+  - Real-time dashboard
+  - Earnings forecasting
+  - Market rate insights
+  - Win rate analysis
+  - Conversion funnel tracking
+- **Lowest Commission**: 10% platform fee (save 10%)
+- **VIP Support**: Priority 12h response + chat support
+- **Job Privileges**:
+  - 2 hours early access to premium jobs
+  - Direct invite to exclusive projects
+  - Auto-invitation by Smart402 AI
+- **Marketing Tools**:
+  - Social media integration
+  - Custom portfolio website
+  - Email signature generator
+  - Promotional materials
+- **Smart402 AI Boost**: 3x priority in autonomous matching
+- **Team Features**: Add 1 team member
+
+**ROI Example**: Break even at $490 in monthly earnings (3-5 projects)
+
+---
+
+#### **ELITE Tier** 🏆 (Invitation Only)
+**Cost**: $149/month or $1,490/year (save $298)
+
+**Target Audience**: Top 5% performers, agencies, established experts
+
+**Qualification Requirements**:
+- 4.8+ star rating with 50+ reviews
+- 95%+ contract completion rate
+- $50,000+ lifetime earnings on platform
+- Manual vetting process
+
+**All PRO features plus**:
+- **"ELITE" Exclusive Badge**: Gold verified badge
+- **Featured Everywhere**:
+  - Homepage featured section
+  - Category spotlight
+  - Newsletter features
+  - Social media promotion
+- **Zero Bid Limits**: Unlimited priority proposals
+- **Ultra Priority**: 10x boost in all rankings
+- **Lowest Commission Ever**: 5% platform fee (save 15%)
+- **Dedicated Success Manager**:
+  - Personal account manager
+  - Monthly strategy calls
+  - Contract negotiation support
+  - Dispute priority resolution
+- **Exclusive Job Access**:
+  - 24 hours early access to all jobs
+  - Enterprise client direct access
+  - Invitation-only premium projects ($10k+)
+- **White Glove Support**: 4h response time + phone support
+- **Marketing & PR**:
+  - Platform blog features
+  - Case study publications
+  - Press release support
+  - Professional photoshoot ($500 credit)
+- **Smart402 Maximum Boost**: 5x priority + manual curation
+- **Team Features**: Up to 5 team members
+- **API Access**: Custom integrations
+- **Early Feature Access**: Beta features first
+
+**ROI Example**: Break even at $1,490 monthly (10+ projects or 2-3 large projects)
+
+---
+
+### 📊 Enhanced Database Schema
+
+#### **11. subscriptions** (New Collection)
+```javascript
+{
+  _id: ObjectId,
+  userId: ObjectId (ref: users, indexed),
+
+  tier: Enum ['free', 'starter', 'pro', 'elite'],
+
+  billing: {
+    interval: Enum ['monthly', 'yearly'],
+    amount: Number,
+    currency: String,
+    nextBillingDate: Date,
+    lastBillingDate: Date
+  },
+
+  payment: {
+    method: String, // 'card', 'x402', 'paypal'
+    x402SubscriptionId: String, // For recurring X402 payments
+    paymentMethodId: String,
+    autoRenew: Boolean
+  },
+
+  status: Enum ['active', 'cancelled', 'expired', 'suspended', 'trial'],
+
+  trial: {
+    isTrial: Boolean,
+    startDate: Date,
+    endDate: Date,
+    daysRemaining: Number
+  },
+
+  features: {
+    bidsPerMonth: Number, // -1 for unlimited
+    bidsUsed: Number,
+    bidsResetDate: Date,
+    platformFeePercentage: Number,
+    searchRankingMultiplier: Number,
+    matchingPriorityBoost: Number,
+    earlyJobAccessHours: Number,
+    teamMembersAllowed: Number
+  },
+
+  benefits: {
+    featuredProfile: Boolean,
+    prioritySupport: Boolean,
+    advancedAnalytics: Boolean,
+    customBranding: Boolean,
+    apiAccess: Boolean
+  },
+
+  usage: {
+    profileViews: Number,
+    proposalsSent: Number,
+    jobsWon: Number,
+    revenue: Number,
+    savedInFees: Number // Compared to free tier
+  },
+
+  // For Elite tier
+  vetting: {
+    status: Enum ['pending', 'approved', 'rejected'],
+    appliedAt: Date,
+    reviewedAt: Date,
+    reviewedBy: ObjectId,
+    notes: String
+  },
+
+  successManager: {
+    assigned: Boolean,
+    managerId: ObjectId (ref: users),
+    assignedAt: Date
+  },
+
+  cancellation: {
+    cancelled: Boolean,
+    cancelledAt: Date,
+    reason: String,
+    feedback: String,
+    effectiveUntil: Date // Subscription remains active until this date
+  },
+
+  history: [{
+    event: Enum ['created', 'upgraded', 'downgraded', 'renewed', 'cancelled', 'suspended'],
+    fromTier: String,
+    toTier: String,
+    date: Date,
+    reason: String
+  }],
+
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+#### **Updated users collection** (Add subscription fields)
+```javascript
+{
+  // ... existing fields ...
+
+  subscription: {
+    tier: Enum ['free', 'starter', 'pro', 'elite'],
+    subscriptionId: ObjectId (ref: subscriptions),
+    isActive: Boolean,
+    expiresAt: Date,
+    features: Object // Cached for quick access
+  },
+
+  badges: [{
+    type: Enum ['verified', 'pro', 'elite', 'top_rated', 'rising_talent'],
+    awardedAt: Date,
+    expiresAt: Date
+  }],
+
+  // Enhanced contractor profile
+  contractorProfile: {
+    // ... existing fields ...
+
+    featuredWork: [{
+      projectId: ObjectId,
+      featured: Boolean,
+      order: Number
+    }],
+
+    videoIntro: {
+      url: String,
+      duration: Number,
+      thumbnailUrl: String
+    },
+
+    customization: {
+      profileColor: String,
+      theme: String,
+      customUrl: String, // e.g., freelance402.com/john-smith
+      bannerImage: String
+    },
+
+    teamMembers: [{
+      userId: ObjectId (ref: users),
+      role: String,
+      addedAt: Date
+    }]
+  },
+
+  // ... rest of existing fields ...
+}
+```
+
+---
+
+### 🔄 Updated Smart402 Matching Algorithm
+
+The matching algorithm now incorporates subscription tiers for fair but incentivized matching:
+
+```python
+class FreelancerMatcher:
+    """
+    Enhanced Smart402 AEO with subscription-aware ranking
+    """
+    def calculate_match_score(
+        self,
+        job: Job,
+        contractor: Contractor
+    ) -> MatchScore:
+        """
+        Master Optimization Function with Subscription Boost:
+
+        Base Score = w1*skill_match + w2*experience_fit +
+                     w3*budget_alignment + w4*availability +
+                     w5*historical_success + w6*(1-risk)
+
+        Final Score = Base Score × Subscription Multiplier
+        """
+
+        # Calculate base score (same as before)
+        base_weights = [0.25, 0.20, 0.15, 0.15, 0.15, 0.10]
+        base_scores = [
+            self._skill_similarity(job, contractor),
+            self._experience_fit(job, contractor),
+            self._budget_alignment(job, contractor),
+            self._availability_check(job, contractor),
+            self._historical_performance(contractor),
+            1 - self._risk_assessment(contractor)
+        ]
+        base_score = sum(w * s for w, s in zip(base_weights, base_scores))
+
+        # Apply subscription multiplier
+        subscription_multiplier = self._get_subscription_boost(contractor)
+
+        final_score = base_score * subscription_multiplier
+
+        return final_score
+
+    def _get_subscription_boost(self, contractor: Contractor) -> float:
+        """
+        Returns subscription tier multiplier for ranking
+        """
+        subscription_boosts = {
+            'free': 1.0,      # No boost
+            'starter': 1.5,   # 50% boost
+            'pro': 3.0,       # 3x boost
+            'elite': 5.0      # 5x boost
+        }
+
+        tier = contractor.subscription.tier
+        return subscription_boosts.get(tier, 1.0)
+
+    def find_top_matches(
+        self,
+        job: Job,
+        limit: int = 10,
+        ensure_diversity: bool = True
+    ) -> List[Match]:
+        """
+        Find top matches with optional diversity to give free-tier
+        freelancers a chance (ethical AI)
+        """
+        all_matches = self._calculate_all_matches(job)
+
+        # Sort by final score
+        sorted_matches = sorted(
+            all_matches,
+            key=lambda x: x.final_score,
+            reverse=True
+        )
+
+        if ensure_diversity:
+            # Ensure at least 20% of top matches are non-premium
+            # This keeps the platform fair and ethical
+            return self._apply_diversity_filter(sorted_matches, limit)
+
+        return sorted_matches[:limit]
+
+    def _apply_diversity_filter(
+        self,
+        matches: List[Match],
+        limit: int
+    ) -> List[Match]:
+        """
+        Ensures platform fairness by including high-quality
+        free-tier freelancers in recommendations
+        """
+        premium_slots = int(limit * 0.8)  # 80% for premium
+        free_slots = limit - premium_slots  # 20% for free tier
+
+        premium_matches = [m for m in matches if m.contractor.subscription.tier != 'free']
+        free_matches = [m for m in matches if m.contractor.subscription.tier == 'free']
+
+        # Take top from each group
+        result = premium_matches[:premium_slots] + free_matches[:free_slots]
+
+        # Sort combined results by score
+        return sorted(result, key=lambda x: x.final_score, reverse=True)[:limit]
+```
+
+---
+
+### 📡 Subscription API Endpoints
+
+```
+### Subscriptions
+POST   /api/subscriptions/plans                    # List all plans with features
+GET    /api/subscriptions/my-subscription          # Get current subscription
+POST   /api/subscriptions/subscribe                # Subscribe to a plan
+POST   /api/subscriptions/upgrade                  # Upgrade subscription
+POST   /api/subscriptions/downgrade                # Downgrade subscription
+POST   /api/subscriptions/cancel                   # Cancel subscription
+POST   /api/subscriptions/resume                   # Resume cancelled subscription
+GET    /api/subscriptions/invoices                 # Get billing history
+GET    /api/subscriptions/usage                    # Get usage statistics
+POST   /api/subscriptions/payment-method           # Update payment method
+
+### Elite Tier
+POST   /api/subscriptions/elite/apply              # Apply for Elite tier
+GET    /api/subscriptions/elite/status             # Check application status
+
+### Subscription Analytics
+GET    /api/subscriptions/analytics/roi            # Calculate ROI
+GET    /api/subscriptions/analytics/comparison     # Compare tier benefits
+GET    /api/subscriptions/analytics/savings        # Calculate fee savings
+```
+
+---
+
+### 💰 Revenue Model & Projections
+
+#### **Revenue Streams**
+
+1. **Platform Commissions** (Primary Revenue)
+   - Free tier: 20% commission
+   - Starter: 15% commission
+   - Pro: 10% commission
+   - Elite: 5% commission
+
+2. **Subscription Fees** (Recurring Revenue)
+   - Starter: $19/month
+   - Pro: $49/month
+   - Elite: $149/month
+
+3. **Client Fees** (Additional)
+   - Client service fee: 3% per transaction
+   - Premium job posting: $5-50 per listing
+   - Featured job: $20-100 extra visibility
+
+#### **Revenue Scenarios** (Monthly)
+
+**Conservative Scenario** (100 contractors, 200 jobs/month)
+```
+Subscriptions:
+- 70 Free (0 revenue from subs)
+- 20 Starter × $19 = $380
+- 8 Pro × $49 = $392
+- 2 Elite × $149 = $298
+Subscription Total: $1,070/month
+
+Commissions (avg $500/freelancer, 50% win rate):
+- Free (70): $500 × 0.5 × 70 × 20% = $3,500
+- Starter (20): $500 × 0.5 × 20 × 15% = $750
+- Pro (8): $500 × 0.5 × 8 × 10% = $200
+- Elite (2): $500 × 0.5 × 2 × 5% = $25
+Commission Total: $4,475/month
+
+Monthly Revenue: $5,545
+Annual Revenue: ~$66,540
+```
+
+**Growth Scenario** (500 contractors, 1,000 jobs/month)
+```
+Subscriptions:
+- 250 Free
+- 150 Starter × $19 = $2,850
+- 80 Pro × $49 = $3,920
+- 20 Elite × $149 = $2,980
+Subscription Total: $9,750/month
+
+Commissions (avg $800/freelancer, 60% win rate):
+- Free: $800 × 0.6 × 250 × 20% = $24,000
+- Starter: $800 × 0.6 × 150 × 15% = $10,800
+- Pro: $800 × 0.6 × 80 × 10% = $3,840
+- Elite: $800 × 0.6 × 20 × 5% = $480
+Commission Total: $39,120/month
+
+Monthly Revenue: $48,870
+Annual Revenue: ~$586,440
+```
+
+**Scale Scenario** (2,000 contractors, 5,000 jobs/month)
+```
+Subscriptions:
+- 800 Free
+- 700 Starter × $19 = $13,300
+- 400 Pro × $49 = $19,600
+- 100 Elite × $149 = $14,900
+Subscription Total: $47,800/month
+
+Commissions (avg $1,200/freelancer, 70% win rate):
+- Free: $1,200 × 0.7 × 800 × 20% = $134,400
+- Starter: $1,200 × 0.7 × 700 × 15% = $88,200
+- Pro: $1,200 × 0.7 × 400 × 10% = $33,600
+- Elite: $1,200 × 0.7 × 100 × 5% = $4,200
+Commission Total: $260,400/month
+
+Monthly Revenue: $308,200
+Annual Revenue: ~$3,698,400
+```
+
+---
+
+### 🎁 Fiverr-Inspired Scalability Features
+
+#### **1. Service Packages ("Gigs")**
+
+Instead of just proposals, freelancers can create pre-packaged services:
+
+```javascript
+// New collection: service_packages
+{
+  _id: ObjectId,
+  contractorId: ObjectId (ref: users),
+
+  title: String,
+  description: String,
+  category: String,
+  subcategory: String,
+
+  packages: [
+    {
+      name: Enum ['basic', 'standard', 'premium'],
+      price: Number,
+      deliveryDays: Number,
+      revisions: Number, // -1 for unlimited
+      features: [String],
+      description: String
+    }
+  ],
+
+  addOns: [{
+    name: String,
+    price: Number,
+    description: String
+  }],
+
+  requirements: [String], // What freelancer needs from client
+
+  media: {
+    images: [String],
+    video: String,
+    samples: [String]
+  },
+
+  stats: {
+    views: Number,
+    orders: Number,
+    inQueue: Number,
+    rating: Number,
+    reviewCount: Number
+  },
+
+  featured: Boolean,
+  featuredUntil: Date,
+
+  status: Enum ['active', 'paused', 'draft'],
+
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+**Benefits**:
+- Clients can buy instantly (no proposal wait)
+- Clear pricing and deliverables
+- Easier browsing and comparison
+- Faster transaction velocity
+
+#### **2. Featured Listings**
+
+Premium freelancers can feature their profiles or services:
+
+```javascript
+// Add to subscriptions features
+featuredListings: {
+  profile: {
+    isFeatured: Boolean,
+    featuredUntil: Date,
+    impressions: Number,
+    clicks: Number
+  },
+  services: [{
+    serviceId: ObjectId,
+    featuredUntil: Date,
+    placement: Enum ['homepage', 'category', 'search']
+  }]
+}
+```
+
+**Pricing**:
+- Starter: 1 featured service/month
+- Pro: 3 featured services/month + profile feature
+- Elite: Unlimited featured + homepage placement
+
+#### **3. Categories & Sub-categories**
+
+Fiverr-style detailed categorization:
+
+```
+Programming & Tech
+├── Web Development
+│   ├── WordPress
+│   ├── Shopify
+│   ├── React/Vue
+│   └── Full Stack
+├── Mobile Apps
+├── Desktop Apps
+└── AI/ML Development
+
+Design & Creative
+├── Logo Design
+├── Brand Identity
+├── Web Design
+└── UX/UI Design
+
+Writing & Translation
+├── Content Writing
+├── Copywriting
+├── Technical Writing
+└── Translation
+
+Marketing
+├── Social Media
+├── SEO
+├── Email Marketing
+└── Video Marketing
+```
+
+#### **4. Level System** (Gamification)
+
+Automatic progression based on performance:
+
+```javascript
+// Add to users
+levelSystem: {
+  currentLevel: Enum ['new_seller', 'level_1', 'level_2', 'top_rated'],
+
+  requirements: {
+    level_1: {
+      completedOrders: 10,
+      rating: 4.7,
+      responseRate: 90,
+      onTimeDelivery: 90
+    },
+    level_2: {
+      completedOrders: 50,
+      rating: 4.8,
+      responseRate: 95,
+      onTimeDelivery: 95,
+      earnings: 5000
+    },
+    top_rated: {
+      completedOrders: 100,
+      rating: 4.9,
+      responseRate: 98,
+      onTimeDelivery: 98,
+      earnings: 20000
+    }
+  },
+
+  progress: {
+    completedOrders: Number,
+    currentRating: Number,
+    responseRate: Number,
+    onTimeDeliveryRate: Number,
+    lifetimeEarnings: Number
+  },
+
+  nextLevelIn: {
+    orders: Number,
+    rating: Number,
+    // ... etc
+  }
+}
+```
+
+**Benefits per Level**:
+- New Seller: Standard features
+- Level 1: +10% search boost, custom extras
+- Level 2: +25% search boost, priority support
+- Top Rated: +50% search boost, featured badge, VIP support
+
+#### **5. Quick Response Badges**
+
+Encourage fast responses:
+
+```javascript
+badges: [{
+  type: 'quick_responder', // Responds within 1 hour
+  type: 'fast_delivery',   // Delivers before deadline
+  type: 'repeat_client',   // 80% repeat client rate
+  type: 'top_in_category'  // Top 10% in category
+}]
+```
+
+#### **6. Seller Modes**
+
+```javascript
+sellerMode: {
+  status: Enum ['available', 'busy', 'vacation'],
+  autoReply: String,
+  vacationNote: String,
+  vacationUntil: Date,
+  maxOrdersInQueue: Number
+}
+```
+
+---
+
+### 🎨 UI/UX Enhancements for Subscriptions
+
+#### **Pricing Page**
+- Interactive comparison table
+- Toggle: Monthly / Yearly pricing
+- ROI calculator
+- "Most Popular" badge on Pro tier
+- Feature comparison checkmarks
+- Social proof: "Join 10,000+ freelancers"
+- Money-back guarantee (7 days)
+
+#### **In-App Upgrade Prompts**
+- When hitting bid limit: "Upgrade to send unlimited proposals"
+- After losing job to premium: "Premium freelancers get 3x more visibility"
+- Profile views: "Want 5x more profile views? Go Pro!"
+- Analytics teaser: "Unlock advanced insights with Pro"
+
+#### **Subscription Dashboard**
+- Current plan and features
+- Usage metrics (bids used, profile views)
+- ROI calculation: "You've saved $XXX in fees this month"
+- Upgrade/downgrade options
+- Billing history
+- Cancel/pause subscription
+
+---
+
+### 📱 Mobile App Subscription Features
+
+#### **In-App Purchases**
+- iOS/Android native subscription handling
+- Apple/Google Pay integration
+- In-app purchase prices (with platform fees)
+
+#### **Push Notifications**
+- "Your subscription expires in 3 days"
+- "Upgrade to Pro and get matched with 3x more jobs"
+- "You've saved $150 in fees this month with Pro!"
+
+---
+
+### 🚀 Updated Development Timeline
+
+Add to **Phase 5** (Week 12-14):
+
+**Subscription System Implementation**:
+1. Database schema for subscriptions
+2. Subscription API endpoints
+3. Payment integration (X402 recurring)
+4. Pricing page UI
+5. Subscription management dashboard
+6. Updated matching algorithm with tier priority
+7. Billing and invoicing
+8. Usage tracking and limits
+9. Upgrade/downgrade flows
+10. Elite tier vetting system
+
+---
+
+### 📊 Updated Success Metrics
+
+**Subscription Metrics**:
+- Subscription conversion rate: Target 30% of active freelancers
+- Pro tier adoption: Target 15% of freelancers
+- Elite tier adoption: Target 3-5% of top performers
+- Monthly Recurring Revenue (MRR)
+- Customer Lifetime Value (CLTV)
+- Churn rate: Target <5% monthly
+- Upgrade rate: Target 20% of starters upgrade to Pro
+- Average revenue per user (ARPU)
+
+**Comparison**:
+```
+Free Tier ARPU: $20-50/month (from commissions only)
+Starter ARPU: $40-80/month (subscription + reduced commissions)
+Pro ARPU: $100-200/month
+Elite ARPU: $300-500/month
+```
+
+---
+
+### 🎯 Go-To-Market Strategy for Subscriptions
+
+#### **Launch Strategy**
+
+**Phase 1: Soft Launch** (Week 1-4)
+- Invite top 100 performers to Elite tier (free for 3 months)
+- Offer 50% discount on Pro tier for first 100 sign-ups
+- A/B test pricing ($39 vs $49 for Pro)
+
+**Phase 2: Public Launch** (Week 5-8)
+- Email campaign to all contractors
+- Blog posts on benefits
+- Case studies from early adopters
+- Webinars on "How to maximize your subscription"
+
+**Phase 3: Optimization** (Week 9-12)
+- Analyze conversion funnels
+- Optimize pricing based on data
+- Improve feature mix
+- Reduce churn through engagement
+
+#### **Marketing Messages**
+
+For **Starter**:
+- "Get 50% more opportunities"
+- "Stand out with a Starter badge"
+- "Pay less, earn more"
+
+For **Pro**:
+- "Unlimited proposals, unlimited potential"
+- "Join the top 20% of freelancers"
+- "Get matched 3x faster with AI priority"
+
+For **Elite**:
+- "Reserved for the best"
+- "Your own success manager"
+- "Save 15% on every project"
+
+---
+
+### 💡 Additional Fiverr-Inspired Features
+
+#### **1. Buyer Requests Board**
+Clients post quick requests, freelancers respond (free tier: 5 responses/day, Pro: unlimited)
+
+#### **2. Skills Tests & Certifications**
+Free tier: 3 tests, Pro: unlimited tests + verified badge
+
+#### **3. Portfolio Analytics**
+Track which portfolio items get most attention
+
+#### **4. Dynamic Pricing**
+AI suggests optimal pricing based on market data (Pro+ only)
+
+#### **5. Promoted Proposals**
+Pay $2-5 to promote specific proposals (all tiers)
+
+#### **6. Referral Program**
+Refer freelancers: 10% of their subscription for 12 months
+Refer clients: $50 credit per paying client
+
+---
+
 ## 📝 Notes
 
 This is a comprehensive roadmap for building a production-ready freelance platform. The timeline is ambitious but achievable with focused development. Priority should be on:
@@ -1759,7 +2624,25 @@ This is a comprehensive roadmap for building a production-ready freelance platfo
 2. **Smart402 integration early** - This is your differentiator
 3. **Security throughout** - Not an afterthought
 4. **Iterative improvement** - Launch MVP, then enhance
+5. **Subscription system** - Launch with Free + Pro tiers, add Starter and Elite later
 
 The platform combines cutting-edge AI (Smart402) with modern web technologies and blockchain payments (X402) to create a truly autonomous and efficient freelance marketplace.
+
+### **Subscription Strategy Summary**
+
+The tiered subscription model:
+- **Increases platform revenue** through recurring payments
+- **Reduces dependency** on transaction fees alone
+- **Incentivizes quality** by rewarding top performers
+- **Maintains fairness** through diversity filters in matching
+- **Provides clear value** with ROI-focused benefits
+- **Scales efficiently** as the platform grows
+
+**Revenue Mix Target** (at scale):
+- 40% from subscription fees
+- 50% from transaction commissions
+- 10% from additional services (featured listings, etc.)
+
+This creates a **more predictable, sustainable revenue model** compared to commission-only platforms.
 
 **Ready to build the future of freelancing! 🚀**
